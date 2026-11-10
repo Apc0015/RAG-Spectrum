@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use RAG Spectrum diagnostic datasets or evaluation methodology in your research or benchmarks, please cite it as below."
+authors:
+  - family-names: "Chhoker"
+    given-names: "Ayush"
+    alias: "Apc0015"
+title: "RAG SPECTRUM: Precision Diagnostic Framework for Enterprise RAG Failure Modes"
+date-released: 2026-10-01
+url: "https://apc15-prism.hf.space/"
+repository-code: "https://github.com/Apc0015/RAG-Spectrum"
+keywords:
+  - retrieval-augmented-generation
+  - rag-evaluation
+  - synthetic-benchmark
+  - failure-modes
+  - parametric-leakage

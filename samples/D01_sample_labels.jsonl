@@ -1,0 +1,2 @@
+{"question_id":"Q_D01_01","dataset_id":"D01","provenance":{"source_doc_ids":["D01_SAMPLE_01"],"source_paragraph_ids":["P1"],"context_depth_percentile":12.5},"answer_entities":["1100 MPa","650 degrees Celsius"],"is_abstention_required":false}
+{"question_id":"Q_D01_02","dataset_id":"D01","provenance":{"source_doc_ids":["D01_SAMPLE_01"],"source_paragraph_ids":["P1"],"context_depth_percentile":58.0},"answer_entities":["gamma-double-prime","nickel and niobium","Ni3Nb"],"is_abstention_required":false}

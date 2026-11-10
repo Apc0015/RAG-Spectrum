@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RAGSpectrumQAPair",
+  "description": "Schema for DXX_qa.jsonl fed to the RAG pipeline query runner.",
+  "type": "object",
+  "required": ["question_id", "doc_id", "dataset_id", "question", "gold_answer", "question_type"],
+  "properties": {
+    "question_id": {
+      "type": "string",
+      "description": "Unique question identifier (e.g., Q_D01_0001_01)"
+    },
+    "doc_id": {
+      "type": "string",
+      "description": "Target document ID in corpus"
+    },
+    "dataset_id": {
+      "type": "string",
+      "pattern": "^D[0-2][0-9]$",
+      "description": "Challenge type ID (D01-D27)"
+    },
+    "question": {
+      "type": "string",
+      "description": "Query prompt to feed to the RAG system"
+    },
+    "gold_answer": {
+      "type": "string",
+      "description": "Ground truth answer string"
+    },
+    "question_type": {
+      "type": "string",
+      "description": "Diagnostic probe type (e.g., atomic_fact, cross_doc_bridge, unanswerable)"
+    }
+  }
+}

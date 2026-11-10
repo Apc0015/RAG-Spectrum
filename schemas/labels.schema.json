@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RAGSpectrumLabelManifest",
+  "description": "Schema for DXX_labels.jsonl fed strictly to the automated grader.",
+  "type": "object",
+  "required": ["question_id", "dataset_id", "provenance", "answer_entities"],
+  "properties": {
+    "question_id": {
+      "type": "string",
+      "description": "Question identifier matching qa.jsonl"
+    },
+    "dataset_id": {
+      "type": "string",
+      "pattern": "^D[0-2][0-9]$",
+      "description": "Challenge type ID (D01-D27)"
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["source_doc_ids", "source_paragraph_ids"],
+      "properties": {
+        "source_doc_ids": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "source_paragraph_ids": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "context_depth_percentile": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Positional depth of evidence in document (0=top, 100=bottom)"
+        }
+      }
+    },
+    "answer_entities": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Key entity tokens that must appear in a faithful extraction"
+    },
+    "is_abstention_required": {
+      "type": "boolean",
+      "description": "True for D20 unanswerable queries where answering indicates hallucination"
+    }
+  }
+}

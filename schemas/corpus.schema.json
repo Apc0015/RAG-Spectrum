@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RAGSpectrumCorpusRecord",
+  "description": "Schema for DXX_corpus.jsonl ingested into the vector database. Zero answer leaks.",
+  "type": "object",
+  "required": ["doc_id", "title", "text", "dataset_id"],
+  "properties": {
+    "doc_id": {
+      "type": "string",
+      "description": "Unique document identifier (e.g., D01_0001)"
+    },
+    "dataset_id": {
+      "type": "string",
+      "pattern": "^D[0-2][0-9]$",
+      "description": "Challenge type ID (D01-D27)"
+    },
+    "title": {
+      "type": "string",
+      "description": "Title or header of the document"
+    },
+    "text": {
+      "type": "string",
+      "description": "Raw ungrounded text for vector indexing and chunking"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Ingestion attributes (word count, format tags)"
+    }
+  }
+}

@@ -1,0 +1,2 @@
+{"question_id":"Q_D01_01","doc_id":"D01_SAMPLE_01","dataset_id":"D01","question":"What is the yield strength of Inconel Alloy 718 at 650 degrees Celsius?","gold_answer":"1100 MPa","question_type":"atomic_fact"}
+{"question_id":"Q_D01_02","doc_id":"D01_SAMPLE_01","dataset_id":"D01","question":"Which phase precipitate is primarily responsible for the precipitation hardening of Inconel Alloy 718?","gold_answer":"Gamma-double-prime phase precipitates consisting of nickel and niobium (Ni3Nb)","question_type":"atomic_fact"}
