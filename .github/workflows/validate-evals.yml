@@ -1,4 +1,4 @@
-name: Diagnostic Dataset & Schema Validation
+name: Schema & Data Contract Validation
 
 on:
   push:
@@ -20,9 +20,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install jsonschema pandas
+          pip install jsonschema
 
-      - name: Validate JSON Schemas and Sample Data
+      - name: Validate JSON Schemas and Sample Data Contracts
         run: |
           python - << 'EOF'
           import json, jsonschema
@@ -35,13 +35,4 @@ jobs:
                       record = json.loads(line)
                       jsonschema.validate(instance=record, schema=schema)
               print(f"Verified samples/D01_sample_{kind}.jsonl matches schema.")
-          EOF
-
-      - name: Verify Empirical Evaluation Artifacts
-        run: |
-          python - << 'EOF'
-          import pandas as pd
-          df = pd.read_csv("evals testing result/prism-dataset-eval-scores.csv")
-          assert len(df) == 27, f"Expected 27 failure modes in CSV, found {len(df)}"
-          print(f"Verified eval dataset with {len(df)} failure modes.")
           EOF

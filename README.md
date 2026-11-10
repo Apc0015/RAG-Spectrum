@@ -4,10 +4,10 @@
 [![Status](https://img.shields.io/badge/Status-Private%20Beta%20%2F%20Invite%20Only-blue?style=flat-square)](https://apc15-prism.hf.space/)
 [![Validation](https://github.com/Apc0015/RAG-Spectrum/actions/workflows/validate-evals.yml/badge.svg)](https://github.com/Apc0015/RAG-Spectrum/actions)
 [![Failure Modes](https://img.shields.io/badge/Failure%20Modes-27%20Isolated%20Vectors-emerald?style=flat-square)](#3-the-27-rag-failure-modes)
-[![Evaluation Architecture](https://img.shields.io/badge/Evaluation-Zero%20Parametric%20Leakage-amber?style=flat-square)](#4-evaluation-testing--empirical-scorecard)
+[![Evaluation Architecture](https://img.shields.io/badge/Evaluation-Zero%20Parametric%20Leakage-amber?style=flat-square)](#4-evaluation-testing-methodology)
 
 > **Live Web Application & Access Queue:** Request private beta access or test the interactive diagnostic catalog at **[https://apc15-prism.hf.space/](https://apc15-prism.hf.space/)**.  
-> **Notice:** This repository serves as the public technical specification, failure-mode taxonomy, data contracts, and empirical evaluation dataset for RAG SPECTRUM. The generation engine and proprietary pipeline implementation are kept private.
+> **Notice:** This repository serves as the public technical specification, failure-mode taxonomy, and open data contracts for RAG SPECTRUM. The generation engine and proprietary pipeline implementation are kept private.
 
 ---
 
@@ -163,36 +163,32 @@ RAG SPECTRUM classifies enterprise RAG degradation into 27 isolated challenge ty
 
 ---
 
-## 4. Evaluation Testing & Empirical Scorecard
+## 4. Evaluation Testing Methodology
 
-### Closed-Book Memorization Gating
-A core failure of conventional RAG benchmarks is **parametric leakage**: if an LLM can answer the evaluation questions using knowledge baked into its pre-trained weights, the test measures model memory rather than RAG fidelity.
+A fundamental problem in conventional RAG evaluation is **parametric memorization leakage**: if an evaluation model can answer questions using knowledge baked into its pre-trained weights, the benchmark is compromised because it measures model memory rather than RAG pipeline retrieval fidelity.
 
-RAG SPECTRUM enforces strict closed-book gating:
-1. Every candidate probe is tested against the evaluation LLM with **zero retrieved context**.
-2. If the model answers correctly without the document, the probe is **flagged as contaminated** and discarded.
-3. Only questions that strictly require document retrieval to answer correctly are retained in the benchmark.
+RAG SPECTRUM enforces four rigorous evaluation pillars to ensure every test reflects true retrieval and synthesis performance:
 
-### Empirical Evaluation Findings
-The empirical benchmark findings below reflect real diagnostic evaluation runs preserved in [`evals testing result/prism-dataset-eval-scores.csv`](evals%20testing%20result/prism-dataset-eval-scores.csv) and visualized in [`evals testing result/prism-dataset-eval.html`](evals%20testing%20result/prism-dataset-eval.html):
+### 1. Closed-Book Memorization Gating
+Every candidate probe undergoes strict closed-book validation before inclusion in the benchmark:
+* **The Probe Test:** The question is submitted to the model with **zero retrieved context**.
+* **Contamination Filtering:** If the model answers correctly without the document, the probe is discarded as contaminated.
+* **Guaranteed Signal:** Every retained question strictly requires document retrieval to answer correctly, ensuring zero false-positive evaluation scores.
 
-| Dataset ID | Failure Mode Name | Category | Yield (Docs/QA) | Accuracy (With Doc) | Leakage Rate (Without Doc) | Primary Diagnostic Root Cause Identified |
-|:---:|:---|:---|:---:|:---:|:---:|:---|
-| **D01** | Atomic Fact Cards | Basic Retrieval | 5 / 25 | 100% | **72.0%** | Parametric memorization leakage (model answers from weights) |
-| **D02** | Long Expository Pages | Basic Retrieval | 5 / 25 | 100% | **87.5%** | Factual generality; multi-section synthesis requires strict provenance gating |
-| **D03** | Boundary Documents | Basic Retrieval | 4 / 20 | 100% | **65.0%** | Answer boundary spans split chunks; requires 20%+ overlap ratio |
-| **D08** | Noisy Orthography | Robustness | 2 / 10 | 90.0% | **10.0%** | Dense retrieval drops out on character noise; sparse BM25 required |
-| **D09** | Markdown Tables | Robustness | 5 / 23 | 91.3% | **8.7%** | Row-column associations broken if chunker does not preserve table markdown |
-| **D11** | Code & Technical Docs | Robustness | 5 / 25 | 84.0% | **56.0%** | Function signature near-duplicates create copy-paste retrieval traps |
-| **D14** | Rare Tokens & IDs | Adversarial | 4 / 17 | 64.7% | **0.0%** | Zero memorization leakage; dense-only models fail on unrepresented subwords |
-| **D15** | Coreference Heavy | Adversarial | 5 / 19 | 94.7% | **31.6%** | Ambiguous pronoun tracking fails when antecedent falls outside chunk window |
-| **D16** | Style / Domain Shift | Specialized | 4 / 20 | 88.9% | **11.1%** | Vocabulary register mismatch causes semantic distance gap |
-| **D17** | Multilingual Snippets | Specialized | 3 / 15 | 100% | **7.1%** | Universal entities survive translation; dense cross-lingual search holds |
-| **D18** | Quote then Summary | Specialized | 5 / 23 | 66.7% | **4.8%** | Attribution verification fails when model trusts citation tags blindly |
-| **D20** | Unanswerable Probes | Specialized | 5 / 22 | 63.6% | **9.1%** | Abstention failure; models hallucinate confident near-miss answers without guardrails |
-| **D27** | Thematic Synthesis | Reasoning | 5 / 20 | 85.0% | **85.0%** | Whole-document summary requires holistic corpus ingestion, not single chunking |
+### 2. Context Depth Attention Profiling
+To diagnose positional attention loss ("lost in the middle"), probes systematically sweep critical evidence across varied depths within the retrieved context window:
+* **Depth Percentiles:** Evidence is positioned at 0% (top), 25%, 50% (middle), 75%, and 100% (bottom) of the assembled prompt.
+* **Degradation Curves:** By tracking accuracy across depth percentiles, teams identify whether rerankers or context assemblers are burying crucial clauses where attention degrades.
 
-*Note: Datasets such as D04, D05, D07, and D21 require specific minimum word thresholds (e.g., 1,700 words for D07) and provide rigorous stress-testing for models with small context generation windows.*
+### 3. Abstention & Near-Miss Verification
+A robust enterprise RAG system must know when to say *"I don't know"*:
+* **Plausible Near-Misses:** Queries are paired with documents that are topically adjacent but intentionally omit the exact answer.
+* **Hallucination Trapping:** Measures whether the system correctly abstains or hallucinates a confident but fabricated answer based on surface keywords.
+
+### 4. Attribution & Provenance Auditing
+Scoring is not based solely on semantic string similarity:
+* **Span-Level Grounding:** Answers are graded against exact gold entity spans and character offsets.
+* **Source Paragraph IDs:** Graders verify that the cited paragraph ID actually supports the generated claim, preventing false citations from passing unnoticed.
 
 ---
 
